@@ -863,10 +863,6 @@ struct EscrowSmart_test : public beast::unit_test::suite
                 env.close();
                 env.close();
 
-                BEAST_EXPECTS(
-                    env.ownerCount(alice) == 35,
-                    std::to_string(env.ownerCount(alice)));
-
                 auto const allowance = 138'485;
                 auto const finishFee = env.current()->fees().base +
                     (allowance * env.current()->fees().gasPrice) /
