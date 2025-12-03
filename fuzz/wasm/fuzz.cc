@@ -44,8 +44,8 @@ std::unique_ptr<ripple::test::jtx::Env> createFuzzerEnv() {
 
     // Create escrows for testing
     auto const finishTime = env->now() + std::chrono::seconds(1);
-    env->apply(escrow(*env, alice, bob, XRP(100)),
-               finish_time(finishTime));
+    env->apply(escrow::create(alice, bob, XRP(100)),
+               escrow::finish_time(finishTime));
     env->close();
 
     return env;

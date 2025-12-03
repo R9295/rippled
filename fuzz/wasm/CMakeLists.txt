@@ -34,6 +34,9 @@ file(GLOB_RECURSE app_sources
     "${CMAKE_SOURCE_DIR}/src/xrpld/peerfinder/*.cpp"
     "${CMAKE_SOURCE_DIR}/src/xrpld/rpc/*.cpp"
     "${CMAKE_SOURCE_DIR}/src/xrpld/shamap/*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/xrpld/perflog/*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/xrpld/consensus/*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/xrpld/conditions/*.cpp"
 )
 target_sources(wasm_fuzzer PRIVATE ${app_sources})
 
