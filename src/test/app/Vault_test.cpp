@@ -620,7 +620,7 @@ class Vault_test : public beast::unit_test::suite
         });
 
         testCases("MPT", [&](Env& env) -> Asset {
-            MPTTester mptt{env, issuer, mptInitNoFund};
+            MPTTester mptt{env, issuer, mptInitNoFund()};
             mptt.create(
                 {.flags = tfMPTCanClawback | tfMPTCanTransfer | tfMPTCanLock});
             PrettyAsset asset = mptt.issuanceID();
@@ -1574,7 +1574,7 @@ class Vault_test : public beast::unit_test::suite
             env.fund(XRP(1000), issuer, owner, depositor);
             env.close();
             Vault vault{env};
-            MPTTester mptt{env, issuer, mptInitNoFund};
+            MPTTester mptt{env, issuer, mptInitNoFund()};
             // Locked because that is the default flag.
             mptt.create();
             Asset asset = mptt.issuanceID();
@@ -1762,7 +1762,7 @@ class Vault_test : public beast::unit_test::suite
             env.close();
             Vault vault{env};
 
-            MPTTester mptt{env, issuer, mptInitNoFund};
+            MPTTester mptt{env, issuer, mptInitNoFund()};
             auto const none = LedgerSpecificFlags(0);
             mptt.create(
                 {.flags = tfMPTCanTransfer | tfMPTCanLock |
@@ -2464,7 +2464,7 @@ class Vault_test : public beast::unit_test::suite
             env.close();
             Vault vault{env};
 
-            MPTTester mptt{env, issuer, mptInitNoFund};
+            MPTTester mptt{env, issuer, mptInitNoFund()};
             mptt.create(
                 {.flags = tfMPTCanTransfer | tfMPTCanLock | lsfMPTCanClawback |
                      tfMPTRequireAuth});

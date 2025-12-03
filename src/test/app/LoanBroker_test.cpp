@@ -114,7 +114,7 @@ class LoanBroker_test : public beast::unit_test::suite
 
         // Bogus assets to use in test cases
         static PrettyAsset const badMptAsset = [&]() {
-            MPTTester badMptt{env, evan, mptInitNoFund};
+            MPTTester badMptt{env, evan, mptInitNoFund()};
             badMptt.create(
                 {.flags = tfMPTCanClawback | tfMPTCanTransfer | tfMPTCanLock});
             env.close();
@@ -565,7 +565,7 @@ class LoanBroker_test : public beast::unit_test::suite
         env(pay(issuer, alice, iouAsset(100'000)));
         env.close();
 
-        MPTTester mptt{env, issuer, mptInitNoFund};
+        MPTTester mptt{env, issuer, mptInitNoFund()};
         mptt.create(
             {.flags = tfMPTCanClawback | tfMPTCanTransfer | tfMPTCanLock});
         env.close();

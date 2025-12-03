@@ -166,7 +166,39 @@ target_link_modules(xrpl PUBLIC
 #     $<INSTALL_INTERFACE:include>)
 
 if(xrpld)
+  add_library(xrpld_core OBJECT)
+  target_include_directories(xrpld_core
+    PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+  )
+
+  file(GLOB_RECURSE xrpld_sources CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/xrpld/*.cpp"
+  )
+  list(FILTER xrpld_sources EXCLUDE REGEX "/Main\\.cpp$")
+  target_sources(xrpld_core PRIVATE ${xrpld_sources})
+
+  if(tests)
+    target_compile_definitions(xrpld_core PUBLIC ENABLE_TESTS)
+    target_compile_definitions(xrpld_core PRIVATE
+                                       UNIT_TEST_REFERENCE_FEE=${UNIT_TEST_REFERENCE_FEE}
+    )
+    file(GLOB_RECURSE xrpld_test_sources CONFIGURE_DEPENDS
+      "${CMAKE_CURRENT_SOURCE_DIR}/src/test/*.cpp"
+    )
+    target_sources(xrpld_core PRIVATE ${xrpld_test_sources})
+  endif()
+
+  target_link_libraries(xrpld_core
+    PUBLIC
+      Xrpl::boost
+      Xrpl::opts
+      Xrpl::libs
+      xrpl.libxrpl
+  )
+
   add_executable(xrpld)
+  target_sources(xrpld PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/xrpld/app/main/Main.cpp")
   if(tests)
     target_compile_definitions(xrpld PUBLIC ENABLE_TESTS)
     target_compile_definitions(xrpld PRIVATE
@@ -177,25 +209,7 @@ if(xrpld)
     PRIVATE
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
   )
-
-  file(GLOB_RECURSE sources CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/xrpld/*.cpp"
-  )
-  target_sources(xrpld PRIVATE ${sources})
-
-  if(tests)
-    file(GLOB_RECURSE sources CONFIGURE_DEPENDS
-      "${CMAKE_CURRENT_SOURCE_DIR}/src/test/*.cpp"
-    )
-    target_sources(xrpld PRIVATE ${sources})
-  endif()
-
-  target_link_libraries(xrpld
-    Xrpl::boost
-    Xrpl::opts
-    Xrpl::libs
-    xrpl.libxrpl
-  )
+  target_link_libraries(xrpld PRIVATE xrpld_core)
   exclude_if_included(xrpld)
   # define a macro for tests that might need to
   # be exluded or run differently in CI environment

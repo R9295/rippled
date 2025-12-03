@@ -105,7 +105,13 @@ struct MPTInit
     // create MPTIssuanceID if seated and follow rules for MPTCreate args
     std::optional<MPTCreate> create = std::nullopt;
 };
-static MPTInit const mptInitNoFund{.fund = false};
+
+inline MPTInit const&
+mptInitNoFund()
+{
+    static MPTInit const init{.fund = false};
+    return init;
+}
 
 struct MPTInitDef
 {

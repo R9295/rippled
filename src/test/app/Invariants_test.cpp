@@ -1937,7 +1937,7 @@ class Invariants_test : public beast::unit_test::suite
                         }
 
                         case Asset::MPT: {
-                            MPTTester mptt{env, issuer, mptInitNoFund};
+                            MPTTester mptt{env, issuer, mptInitNoFund()};
                             mptt.create(
                                 {.flags = tfMPTCanClawback | tfMPTCanTransfer |
                                      tfMPTCanLock});

@@ -646,7 +646,7 @@ protected:
                         env.current()->fees().accountReserve(10) * 10,
                         noripple(borrower));
 
-                MPTTester mptt{env, issuer, mptInitNoFund};
+                MPTTester mptt{env, issuer, mptInitNoFund()};
                 mptt.create(
                     {.flags =
                          tfMPTCanClawback | tfMPTCanTransfer | tfMPTCanLock});
@@ -3087,7 +3087,7 @@ protected:
 
                 // We need two different asset types, MPT and IOU. Prepare MPT
                 // first
-                MPTTester mptt{env, issuer, mptInitNoFund};
+                MPTTester mptt{env, issuer, mptInitNoFund()};
 
                 auto const none = LedgerSpecificFlags(0);
                 mptt.create(
@@ -3618,7 +3618,7 @@ protected:
         env(pay(issuer, borrower, iouAsset(10'000)));
         env.close();
 
-        MPTTester mptt{env, issuer, mptInitNoFund};
+        MPTTester mptt{env, issuer, mptInitNoFund()};
         mptt.create(
             {.flags = tfMPTCanClawback | tfMPTCanTransfer | tfMPTCanLock});
         // Scale the MPT asset a little bit so we can get some interest
@@ -4787,7 +4787,7 @@ protected:
         env.fund(XRP(1'000'000), issuer, lender, borrower);
         env.close();
 
-        MPTTester mptt{env, issuer, mptInitNoFund};
+        MPTTester mptt{env, issuer, mptInitNoFund()};
         mptt.create(
             {.flags = tfMPTCanClawback | tfMPTCanTransfer | tfMPTCanLock});
         PrettyAsset const mptAsset = mptt.issuanceID();
@@ -5666,7 +5666,7 @@ protected:
         env.fund(XRP(100'000), issuer, alice);
         env.close();
 
-        MPTTester mpt{env, issuer, mptInitNoFund};
+        MPTTester mpt{env, issuer, mptInitNoFund()};
 
         mpt.create(
             {.flags = tfMPTCanTransfer,
