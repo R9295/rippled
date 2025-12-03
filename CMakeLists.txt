@@ -155,3 +155,8 @@ if(tests)
   include(CTest)
   add_subdirectory(src/tests/libxrpl)
 endif()
+
+option(fuzzer "Build fuzzers" OFF)
+if(fuzzer)
+  add_subdirectory(fuzz/wasm)
+endif()
