@@ -16,7 +16,7 @@ setupConfigForUnitTests(Config& cfg)
     // Config.h
     // NOTE: For new `FEES` fields, you need to wait for the first flag ledger
     // to close for the values to be activated.
-    cfg.FEES.reference_fee = UNIT_TEST_REFERENCE_FEE;
+    cfg.FEES.reference_fee = 10;
     cfg.FEES.account_reserve = XRP(200).value().xrp().drops();
     cfg.FEES.owner_reserve = XRP(50).value().xrp().drops();
     cfg.FEES.extension_compute_limit = 1'000'000;
