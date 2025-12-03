@@ -875,7 +875,7 @@ class FeeVote_test : public beast::unit_test::suite
 
         // establish what the current fees are
         BEAST_EXPECT(
-            env.current()->fees().base == XRPAmount{UNIT_TEST_REFERENCE_FEE});
+            env.current()->fees().base == XRPAmount{10});
         BEAST_EXPECT(env.current()->fees().reserve == XRPAmount{200'000'000});
         BEAST_EXPECT(env.current()->fees().increment == XRPAmount{50'000'000});
 
@@ -981,7 +981,7 @@ class FeeVote_test : public beast::unit_test::suite
 
         // establish what the current fees are
         BEAST_EXPECT(
-            env.current()->fees().base == XRPAmount{UNIT_TEST_REFERENCE_FEE});
+            env.current()->fees().base == XRPAmount{10});
         BEAST_EXPECT(env.current()->fees().reserve == XRPAmount{200'000'000});
         BEAST_EXPECT(env.current()->fees().increment == XRPAmount{50'000'000});
         BEAST_EXPECT(env.current()->fees().extensionComputeLimit == 0);
