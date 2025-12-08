@@ -379,6 +379,10 @@ public:
         return close(std::chrono::seconds(5));
     }
 
+    /** Reset ledger state back to genesis (for fuzzing/testing). */
+    void
+    resetLedger();
+
     /** Turn on JSON tracing.
         With no arguments, trace all
     */

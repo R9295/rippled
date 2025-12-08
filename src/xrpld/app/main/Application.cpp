@@ -486,6 +486,8 @@ public:
     run() override;
     void
     signalStop(std::string msg) override;
+    void
+    resetLedgerForTesting() override;
     bool
     checkSigs() const override;
     void
@@ -1651,6 +1653,13 @@ void
 ApplicationImp::checkSigs(bool check)
 {
     checkSigs_ = check;
+}
+
+void
+ApplicationImp::resetLedgerForTesting()
+{
+    std::lock_guard lock(m_masterMutex);
+    startGenesisLedger();
 }
 
 bool

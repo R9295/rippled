@@ -123,6 +123,9 @@ public:
     run() = 0;
     virtual void
     signalStop(std::string msg) = 0;
+    /** Reset ledger state back to genesis (test-only). */
+    virtual void
+    resetLedgerForTesting() = 0;
     virtual bool
     checkSigs() const = 0;
     virtual void

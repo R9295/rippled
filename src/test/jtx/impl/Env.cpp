@@ -135,6 +135,17 @@ Env::close(
 }
 
 void
+Env::resetLedger()
+{
+    app().resetLedgerForTesting();
+    map_.clear();
+    memoize(Account::master);
+    txid_.zero();
+    ter_ = tesSUCCESS;
+    timeKeeper().set(closed()->info().closeTime);
+}
+
+void
 Env::memoize(Account const& account)
 {
     map_.emplace(account.id(), account);
