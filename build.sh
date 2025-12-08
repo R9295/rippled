@@ -4,27 +4,30 @@ set -euo pipefail
 usage() {
   cat <<USAGE
 Usage: $0 [afl|asan|coverage]
-  afl       Build with afl-clang-fast instrumention (default)
-  asan      Build with clang + AddressSanitizer to triage crashes
-  coverage  Build with clang + sancov 8-bit counters for raw coverage
+  afl       Build with afl-clang-fast instrumentation (default)
+  asan      Build with clang + AddressSanitizer
+  coverage  Build with clang + LLVM coverage (-fprofile-instr-generate -fcoverage-mapping)
 USAGE
 }
 
 variant=${1:-afl}
 case "$variant" in
   afl|asan|coverage) ;;
-  -h|--help) usage; exit 0;;
-  *) echo "Unknown variant '$variant'" >&2; usage; exit 1;;
+  -h|--help) usage; exit 0 ;;
+  *) echo "Unknown variant '$variant'" >&2; usage; exit 1 ;;
 esac
 
 setup() {
-  local build_dir=$1
-  local build_type=$2
-  local c_comp=$3
-  local cxx_comp=$4
-  local extra_cmake=$5
+  local build_dir=$1; shift
+  local build_type=$1; shift
+  local c_comp=$1; shift
+  local cxx_comp=$1; shift
+  local -a extra_cmake=("$@")
+
   mkdir -p "$build_dir"
-  conan remote add xrplf https://conan.ripplex.io --force
+  if ! conan remote list | grep -q '^xrplf'; then
+    conan remote add xrplf https://conan.ripplex.io --force
+  fi
   conan export external/wasmi --version=0.42.1
   conan install . \
     --output-folder="$build_dir" \
@@ -42,21 +45,28 @@ setup() {
     -DCMAKE_C_COMPILER=$c_comp \
     -DCMAKE_CXX_COMPILER=$cxx_comp \
     -Dxrpld=ON \
-    -Dtests=OFF $extra_cmake
+    -Dtests=OFF \
+    "${extra_cmake[@]}"
 }
 
 case "$variant" in
   afl)
-    setup build-afl Release afl-clang-fast afl-clang-fast++ "-DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld -DCMAKE_SHARED_LINKER_FLAGS=-fuse-ld=lld"
-    AFL_LLVM_CMPLOG=1 AFL_LLVM_ALLOWLIST=$(pwd)/afl_allowlist.txt cmake --build build-afl --target wasm_fuzzer -j$(nproc)
+    setup build-afl Release afl-clang-fast afl-clang-fast++ \
+      -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld \
+      -DCMAKE_SHARED_LINKER_FLAGS=-fuse-ld=lld
+    AFL_LLVM_CMPLOG=1 AFL_LLVM_ALLOWLIST=$(pwd)/afl_allowlist.txt cmake --build build-afl --target wasm_fuzzer -j"$(nproc)"
     ;;
   asan)
-    AFL_USE_ASAN=1 setup build-asan Debug afl-clang-fast afl-clang-fast++ "-DSANITIZE_ADDRESS=ON -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld -DCMAKE_SHARED_LINKER_FLAGS=-fuse-ld=lld"
-    cmake --build build-asan --target wasm_fuzzer -j$(nproc)
+    AFL_USE_ASAN=1 setup build-asan Debug afl-clang-fast afl-clang-++ \
+      -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld \
+      -DCMAKE_SHARED_LINKER_FLAGS=-fuse-ld=lld
+    AFL_USE_ASAN=1 cmake --build build-asan --target wasm_fuzzer -j"$(nproc)"
     ;;
   coverage)
-    export SANITIZE_COVERAGE=ON
-    setup build-cov Debug clang clang++ ""
-    cmake --build build-cov --target wasm_fuzzer -j$(nproc)
+    setup build-cov Debug clang clang++ \
+      "-DCMAKE_CXX_FLAGS=-fprofile-instr-generate -fcoverage-mapping" \
+      -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld \
+      -DCMAKE_SHARED_LINKER_FLAGS=-fuse-ld=lld
+    cmake --build build-cov --target wasm_fuzzer -j"$(nproc)"
     ;;
 esac
