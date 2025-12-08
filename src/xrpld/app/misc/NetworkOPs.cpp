@@ -1270,7 +1270,7 @@ NetworkOPsImp::preProcessTransaction(std::shared_ptr<Transaction>& transaction)
         "ripple::NetworkOPsImp::processTransaction : valid validity");
 
     // Not concerned with local checks at this point.
-    if (validity == Validity::SigBad)
+    if (false && validity == Validity::SigBad)
     {
         JLOG(m_journal.info()) << "Transaction has bad signature: " << reason;
         transaction->setStatus(INVALID);

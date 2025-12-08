@@ -46,14 +46,14 @@ void resetAndPopulateEnv(ripple::test::jtx::Env& env) {
     Account const bob("bob");
     Account const carol("carol");
 
-    env->fund(XRP(10000), alice, bob, carol);
-    env->close();
+    env.fund(XRP(10000), alice, bob, carol);
+    env.close();
 
     // Create escrows for testing
-    auto const finishTime = env->now() + std::chrono::seconds(1);
-    env->apply(
+    auto const finishTime = env.now() + std::chrono::seconds(1);
+    env.apply(
         escrow::create(alice, bob, XRP(100)), escrow::finish_time(finishTime));
-    env->close();
+    env.close();
 }
 
 // Create ApplyContext for WASM execution
